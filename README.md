@@ -49,8 +49,8 @@ Pull requests welcome, if you can deal with my bad code :p
 
 # Dependencies
 
-Android Support Library v4, v7
-ActionBarSherlock
-[BoD/android-switch-backport](https://github.com/BoD/android-switch-backport)
-[greenrobot/EventBus](https://github.com/greenrobot/EventBus)
+- Android Support Library v4, v7
+- ActionBarSherlock
+- [BoD/android-switch-backport](https://github.com/BoD/android-switch-backport)
+- [greenrobot/EventBus](https://github.com/greenrobot/EventBus)
 
