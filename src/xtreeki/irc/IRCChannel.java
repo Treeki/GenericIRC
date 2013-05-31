@@ -145,6 +145,6 @@ public class IRCChannel extends IRCBuffer {
 	@Override
 	public void writeText(CharSequence text) {
 		mConnection.writeLine("PRIVMSG " + mChannelName + " :" + text);
-		pushMessage(mConnection.getNick() + ": " + text);
+		pushMessage("[" + mConnection.getNick() + "] " + text);
 	}
 }
