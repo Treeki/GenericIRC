@@ -32,5 +32,6 @@ public class IRCStatusBuffer extends IRCBuffer {
 
 	@Override
 	public void writeText(CharSequence text) {
+		mConnection.writeLine(text.toString());
 	}
 }
