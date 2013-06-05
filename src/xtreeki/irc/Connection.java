@@ -164,8 +164,8 @@ public class Connection implements Runnable {
 
 		BufferedReader reader;
 		try {
-			reader = new BufferedReader(new InputStreamReader(mSocket.getInputStream(), "US-ASCII"));
-			mBufWriter = new BufferedWriter(new OutputStreamWriter(mSocket.getOutputStream(), "US-ASCII"));
+			reader = new BufferedReader(new InputStreamReader(mSocket.getInputStream(), "UTF-8"));
+			mBufWriter = new BufferedWriter(new OutputStreamWriter(mSocket.getOutputStream(), "UTF-8"));
 		} catch (IOException e) {
 			mStatusBuffer.pushMessage(e.toString());
 			setState(State.DISCONNECTED);
