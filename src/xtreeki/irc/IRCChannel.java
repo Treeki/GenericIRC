@@ -22,6 +22,25 @@ public class IRCChannel extends IRCBuffer {
 		mChannelName = channelName;
 	}
 
+	private boolean mActive = false;
+	public boolean isActive() {
+		return mActive;
+	}
+	public void makeActive() {
+		mActive = true;
+		pushMessage("*** You have joined " + mChannelName);
+	}
+	public void makeInactive() {
+		mActive = false;
+	}
+
+	public void disconnected() {
+		if (mActive) {
+			pushMessage("*** Disconnected.");
+			makeInactive();
+		}
+	}
+
 	private ArrayList<User> mUsers = new ArrayList<User>();
 	void registerInitialUserList(String nicksList) {
 		for (String rawNick : nicksList.split(" ")) {
@@ -74,6 +93,22 @@ public class IRCChannel extends IRCBuffer {
 	}
 	boolean userHasQuit(String nick, String message) {
 		return userHasLeft(nick, LeaveType.Quit, message, null);
+	}
+
+	// This is a bit weird.
+	public void iWasKicked(String kicker, String message) {
+		String extra = (message == null) ? "" : (" (" + message + ")");
+		pushMessage("*** You were kicked by " + kicker + extra);
+	}
+	public void iHaveParted(String message) {
+		String extra = (message == null) ? "" : (" (" + message + ")");
+		pushMessage("*** You have parted " + mChannelName + extra);
+		makeInactive();
+	}
+	public void iHaveQuit(String message) {
+		String extra = (message == null) ? "" : (" (" + message + ")");
+		pushMessage("*** You have disconnected " + extra);
+		makeInactive();
 	}
 
 	private enum LeaveType {
@@ -144,6 +179,10 @@ public class IRCChannel extends IRCBuffer {
 
 	@Override
 	public void writeText(CharSequence text) {
+		if (!mActive) {
+			pushMessage("*** You are currently not in this channel.");
+			return;
+		}
 		mConnection.writeLine("PRIVMSG " + mChannelName + " :" + text);
 		pushMessage("[" + mConnection.getNick() + "] " + text);
 	}

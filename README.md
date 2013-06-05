@@ -32,9 +32,8 @@ Pull requests welcome, if you can deal with my bad code :p
 - Get a decent icon for this thing
 - Handling of most of the IRC protocol
 - CTCP
+- Delete networks
 - Handle typed commands
-- State tracking of active/inactive channel buffers
-- Add unread count to pre-ICS drawer list item layout
 - UI for joining channels
 - UI for managing channels
 - Close buffers

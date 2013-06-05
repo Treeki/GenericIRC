@@ -205,6 +205,10 @@ public class Connection implements Runnable {
 			lineReceived(line);
 		}
 
+		for (IRCChannel chan : mChannels.values()) {
+			chan.disconnected();
+		}
+
 		setState(State.DISCONNECTED);
 		mStatusBuffer.pushMessage("Disconnected.");
 	}
@@ -290,7 +294,10 @@ public class Connection implements Runnable {
 				partMsg = bits.get(1);
 
 			if (chan != null) {
-				chan.userParted(targetNick, partMsg);
+				if (targetNick.equals(mMyNick))
+					chan.iHaveParted(partMsg);
+				else
+					chan.userParted(targetNick, partMsg);
 				return;
 			}
 		} else if (cmd.equals("QUIT")) {
@@ -298,8 +305,13 @@ public class Connection implements Runnable {
 			if (!bits.isEmpty())
 				quitMsg = bits.get(0);
 
+			boolean isMe = targetNick.equals(mMyNick);
+
 			for (IRCChannel chan : mChannels.values()) {
-				chan.userHasQuit(targetNick, quitMsg);
+				if (isMe)
+					chan.iHaveQuit(quitMsg);
+				else
+					chan.userHasQuit(targetNick, quitMsg);
 			}
 			return;
 		} else if (cmd.equals("KICK")) {
@@ -308,8 +320,13 @@ public class Connection implements Runnable {
 			if (bits.size() > 2)
 				kickMsg = bits.get(2);
 
+			String kicked = bits.get(1);
+
 			if (chan != null) {
-				chan.userWasKicked(bits.get(1), targetNick, kickMsg);
+				if (kicked.equals(mMyNick))
+					chan.iWasKicked(targetNick, kickMsg);
+				else
+					chan.userWasKicked(kicked, targetNick, kickMsg);
 				return;
 			}
 
@@ -376,6 +393,8 @@ public class Connection implements Runnable {
 			event.buffer = chan;
 			EventBus.getDefault().post(event);
 		}
+
+		findChannel(chanName).makeActive();
 	}
 
 
